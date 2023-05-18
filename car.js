@@ -1,6 +1,6 @@
 class Car {
   //properties/attributes of a car
-  constructor(x, y, width, height) {
+  constructor(x, y, width, height,controlType,maxSpeed=3) {
     this.x = x;
     this.y = y;
     this.width = width;
@@ -8,26 +8,36 @@ class Car {
 
     this.speed = 0;
     this.acceleration = 0.2;
-    this.maxSpeed = 3;
+    this.maxSpeed = maxSpeed;
     this.friction = 0.05;
     this.angle = 0;
+    this.damaged=false;
 
-    this.sensor = new Sensor(this);
-    this.controls = new Controls();
+    if(controlType!="DUMMY"){
+      this.sensor = new Sensor(this);
+    }
+    this.controls = new Controls(controlType);
   }
 
-  update(roadBorders) {
+  update(roadBorders,traffic) {
     if(!this.damaged){
       this.#move();
       this.polygon=this.#createPolygon();
-      this.damaged=this.#aseessDamage(roadBorders);
+      this.damaged=this.#aseessDamage(roadBorders,traffic);
     }
-    this.sensor.update(roadBorders);
+    if(this.sensor){
+      this.sensor.update(roadBorders,traffic);
+    }
   }
 
-  #aseessDamage(roadBorders){
+  #aseessDamage(roadBorders,traffic){
     for(let i=0; i<roadBorders.length; i++){
       if(polysIntersect(this.polygon,roadBorders[i])){
+        return true;
+      }
+    }
+    for(let i=0; i<traffic.length; i++){
+      if(polysIntersect(this.polygon,traffic[i].polygon)){
         return true;
       }
     }
@@ -110,12 +120,12 @@ class Car {
     this.y -= this.speed;
   }
 
-  draw(ctx) {
+  draw(ctx,color) {
     if(this.damaged){
       // if this car is damaged --> makes the car gray
       ctx.fillStyle="gray";
     }else{
-      ctx.fillStyle="black";
+      ctx.fillStyle=color;
     }
    ctx.beginPath();
    ctx.moveTo(this.polygon[0].x,this.polygon[0].y);
@@ -124,6 +134,9 @@ class Car {
    }
    ctx.fill();
     // In addition to a car, the sensor is called to drawed itself
-    this.sensor.draw(ctx);
+
+    if(this.sensor){
+      this.sensor.draw(ctx);
+    }
   }
 }
