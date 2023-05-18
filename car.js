@@ -17,8 +17,56 @@ class Car {
   }
 
   update(roadBorders) {
-    this.#move();
+    if(!this.damaged){
+      this.#move();
+      this.polygon=this.#createPolygon();
+      this.damaged=this.#aseessDamage(roadBorders);
+    }
     this.sensor.update(roadBorders);
+  }
+
+  #aseessDamage(roadBorders){
+    for(let i=0; i<roadBorders.length; i++){
+      if(polysIntersect(this.polygon,roadBorders[i])){
+        return true;
+      }
+    }
+  }
+
+  //create car shape, car can be multiple shapes by changing values in this method for complex shapes
+  #createPolygon() {
+    const points=[];
+    const rad=Math.hypot(this.width, this.height)/2;
+    const alpha=Math.atan2(this.width,this.height);
+    // tangent of the angle (arc tan) = width/height
+    //           w
+    //     ---------------
+    //     |      |    /
+    //     |      |   / 
+    //     |      |a / rad
+    // h   |      |^/
+    //     |      |/
+    //     |
+    //     |
+    //     |
+
+    points.push({
+      x: this.x-Math.sin(this.angle-alpha)*rad,
+      y: this.y-Math.cos(this.angle-alpha)*rad,
+    });
+    points.push({
+      x: this.x-Math.sin(this.angle+alpha)*rad,
+      y: this.y-Math.cos(this.angle+alpha)*rad,
+    });
+    points.push({
+      x: this.x-Math.sin(Math.PI+this.angle-alpha)*rad,
+      y: this.y-Math.cos(Math.PI+this.angle-alpha)*rad,
+    });
+    points.push({
+      x: this.x-Math.sin(Math.PI+this.angle+alpha)*rad,
+      y: this.y-Math.cos(Math.PI+this.angle+alpha)*rad,
+    });
+    return points
   }
 
   //# = private method
@@ -63,25 +111,18 @@ class Car {
   }
 
   draw(ctx) {
-    // Rotation using canvas context
-      // 1.save the context
-      // 2.translate to the point where the rotation to be center at
-      // 3.rotate by minus angle
-      ctx.save();
-      ctx.translate(this.x, this.y);
-      ctx.rotate(-this.angle);
-
-    ctx.beginPath();
-    ctx.rect(
-      -this.width / 2, 
-      -this.height / 2, 
-      this.width, 
-      this.height
-    );
-    ctx.fill();
-
-    ctx.restore();
-    
+    if(this.damaged){
+      // if this car is damaged --> makes the car gray
+      ctx.fillStyle="gray";
+    }else{
+      ctx.fillStyle="black";
+    }
+   ctx.beginPath();
+   ctx.moveTo(this.polygon[0].x,this.polygon[0].y);
+   for(let i=1;i<this.polygon.length;i++){
+    ctx.lineTo(this.polygon[i].x,this.polygon[i].y);
+   }
+   ctx.fill();
     // In addition to a car, the sensor is called to drawed itself
     this.sensor.draw(ctx);
   }

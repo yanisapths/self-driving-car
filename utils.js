@@ -21,3 +21,32 @@ function getIntersection(A,B,C,D){
 
   return null;
 }
+
+function polysIntersect(poly1,poly2){
+  for(let i=0;i<poly1.length;i++){
+    for(let j=0;j<poly2.length;j++){
+      // check if they're touch or not
+      // comparing points against every points in the polygon
+      const touch = getIntersection(
+        poly1[i],
+        poly1[(i+1)%poly2.length], //modular: make this value = zero, so that the last & first point of the polygon=(0,0) when they're conected
+        poly2[j],
+        poly2[(j+1)%poly2.length],
+      );
+      if(touch){
+        return true;
+      }
+    }
+  }
+  return false;
+}
+
+    // p1             p0
+    //   *-----------*
+    //   |           |
+    //   |           |
+    //   |  Polygon  |
+    //   |           |
+    //   |           |
+    //   *-----------*
+    // p2             p3
