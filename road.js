@@ -36,7 +36,8 @@ class Road {
     // this.left+laneWidth/2 --> starts from the middle of theleft lane
     // Math.min(laneIndex,this.laneCount-1)*laneWidth --> the car always goes to the right most possible lane
     
-    return this.left+laneWidth/2+Math.min(laneIndex,this.laneCount-1)*laneWidth;
+    return this.left+laneWidth/2+
+      Math.min(laneIndex,this.laneCount-1)*laneWidth;
     // Return us the (laneCount) different lane indicies, an offset of laneWidth away from the middle of the first lane
 
     // |    |    |    |   
@@ -54,15 +55,13 @@ class Road {
 
     for (let i = 0; i <= this.laneCount; i++) {
       //lerp - linear interpolation - utils.js
-      const x = lerp(this.left, this.right, i / this.laneCount);
-      
-      //add dash line
-      if(i>0 && i<this.laneCount){
-        ctx.setLineDash([20,20]);
-      }else{
-        ctx.setLineDash([]);
-      }
+      const x = lerp(
+        this.left, 
+        this.right, 
+        i / this.laneCount
+      );
 
+      ctx.setLineDash([20,20]);
       ctx.beginPath(); //starts a new path by emptying the list of sub-paths
       ctx.moveTo(x, this.top); //moves the current window to the specified coordinates.
       ctx.lineTo(x, this.bottom); //adds a straight line to the current sub-path by connecting the sub-path's last point to the specified (x, y) coordinates.
@@ -75,7 +74,7 @@ class Road {
         ctx.moveTo(border[0].x, border[0].y);
         ctx.lineTo(border[1].x, border[1].y);
         ctx.stroke(); 
-    })
+    });
   }
 }
 
