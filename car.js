@@ -1,6 +1,6 @@
 class Car {
   //properties/attributes of a car
-  constructor(x, y, width, height,controlType,maxSpeed=5,color="crimson") {
+  constructor(x, y, width, height,controlType,maxSpeed=4,color="crimson") {
     this.x = x;
     this.y = y;
     this.width = width;
