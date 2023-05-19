@@ -9,7 +9,7 @@ const networkCtx = networkCanvas.getContext("2d");
 //canvas.width/2 --> the road starts @ the center , canvas.width --> the road has 0.9* width of the canvas
 const road = new Road(carCanvas.width / 2, carCanvas.width*0.9);
 //road.getLaneCenter(1)-x 100-y 30-width 50-height
-const N = 10;
+const N = 1000;
 const cars = geneateCars(N);
 
 let bestCar=cars[0];
