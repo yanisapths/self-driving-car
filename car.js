@@ -135,7 +135,7 @@ class Car {
     this.y -= this.speed;
   }
 
-  draw(ctx,color) {
+  draw(ctx,color,drawSensor=false) {
     if(this.damaged){
       // if this car is damaged --> makes the car gray
       ctx.fillStyle="gray";
@@ -150,7 +150,7 @@ class Car {
    ctx.fill();
     // In addition to a car, the sensor is called to drawed itself
 
-    if(this.sensor){
+    if(this.sensor && drawSensor){
       this.sensor.draw(ctx);
     }
   }
